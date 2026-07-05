@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   // 如果是用户主页 (username.github.io)，baseURL 设为 '/'
   // 如果是项目主页 (username.github.io/repo-name)，改为 '/repo-name/'
   app: {
-    baseURL: '/',
+    baseURL: '/FadeMapPoint/',
   },
 
   // 静态生成配置
