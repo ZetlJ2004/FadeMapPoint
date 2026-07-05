@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(npx nuxi@latest init . --packageManager npm)",
+      "Bash(npx nuxi@latest init . --template content --packageManager npm --gitInit --force)",
+      "Bash(npx nuxi *)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install *)",
+      "Bash(node -e \"const oxc = require\\('oxc-parser'\\); console.log\\(typeof oxc.parseSync\\)\")",
+      "Bash(mkdir -p pages layouts components assets/css)",
+      "Bash(mv app/app.vue app.vue)",
+      "Bash(mv app/pages/* pages/)",
+      "Bash(mv app/layouts/* layouts/)",
+      "Bash(mv app/components/* components/)",
+      "Bash(rm -f content.config.ts)",
+      "Bash(rm -rf .data)",
+      "Bash(cp .nuxt/tsconfig.json .nuxt/tsconfig.node.json)",
+      "Bash(timeout 15 npx nuxt dev)",
+      "Bash(cp .nuxt/tsconfig.json .nuxt/tsconfig.app.json)",
+      "Bash(cp .nuxt/tsconfig.server.json .nuxt/tsconfig.node.json)",
+      "Bash(rm -rf .output)",
+      "Bash(rm -rf .nuxt .output)",
+      "Bash(npx nuxt *)",
+      "Bash(rm -f content/index.md)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(kill %1)"
+    ]
+  }
+}
