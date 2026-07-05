@@ -1,14 +1,16 @@
 <script setup lang="ts">
 const navLinks = [
-  { to: '/', label: '首页' },
-  { to: '/about', label: '关于' },
+  { to: '/', label: '地图' },
 ]
 </script>
 
 <template>
   <header class="header">
     <div class="header-inner">
-      <NuxtLink to="/" class="logo">VA</NuxtLink>
+      <NuxtLink to="/" class="logo">
+        <span class="logo-icon">◈</span>
+        ZetlJ
+      </NuxtLink>
       <nav class="nav">
         <NuxtLink
           v-for="link in navLinks"
@@ -18,7 +20,7 @@ const navLinks = [
         >
           {{ link.label }}
         </NuxtLink>
-        <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
+        <a href="https://github.com/ZetlJ2004" target="_blank" class="nav-link">GitHub</a>
       </nav>
     </div>
   </header>
@@ -45,12 +47,17 @@ const navLinks = [
 }
 
 .logo {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
+
+.logo-icon { color: var(--color-primary); font-size: 1.1rem; }
 
 .nav {
   display: flex;

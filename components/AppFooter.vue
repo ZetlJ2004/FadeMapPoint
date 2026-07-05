@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer-inner">
-      <p>© {{ new Date().getFullYear() }} VA — Powered by <a href="https://nuxt.com" target="_blank">Nuxt</a></p>
+      <p>© {{ new Date().getFullYear() }} ZetlJ · 黑梦点位 — 无畏契约地图点位图鉴</p>
     </div>
   </footer>
 </template>
@@ -23,10 +23,5 @@
   color: var(--color-muted);
   font-size: 0.85rem;
   margin: 0;
-}
-
-.footer a {
-  color: var(--color-primary);
-  text-decoration: none;
 }
 </style>
