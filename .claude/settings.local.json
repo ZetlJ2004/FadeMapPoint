@@ -31,7 +31,9 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(gh auth *)",
-      "Bash(ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N \"\" -q)"
+      "Bash(ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N \"\" -q)",
+      "Bash(taskkill //F //PID 30904)",
+      "Bash(npm ls *)"
     ]
   }
 }
