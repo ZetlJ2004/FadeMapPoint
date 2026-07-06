@@ -78,12 +78,45 @@ function breezeCategories(): MapCategory[] {
   ]
 }
 
+// 霓虹町：A/B 两个点
+const NEON_SECTIONS: MapSection[] = [
+  { key: 'a', label: 'A 点' },
+  { key: 'b', label: 'B 点' },
+]
+
+// 天枢云阙专用：全含 A/B/中
+const SKYHUB_SECTIONS: MapSection[] = [
+  { key: 'a', label: 'A 点' },
+  { key: 'b', label: 'B 点' },
+  { key: 'mid', label: '中路' },
+]
+
+function skyhubCategories(): MapCategory[] {
+  return [
+    { key: 'attack',  label: '进攻方', icon: '⚔️', sections: SKYHUB_SECTIONS },
+    { key: 'defense', label: '防守方', icon: '🛡️', sections: SKYHUB_SECTIONS },
+    { key: 'retake',  label: '回防',   icon: '🔄', sections: SKYHUB_SECTIONS },
+  ]
+}
+
 export const MAPS: MapInfo[] = [
   {
     id: 'breeze', name: '微风岛屿', nameEn: 'Breeze',
     splash: '#5B8C5A',
     splashImage: '/maps/breeze/map.png',
     categories: breezeCategories(),
+  },
+  {
+    id: 'neon', name: '霓虹町', nameEn: 'Neon Town',
+    splash: '#8B2E8B',
+    splashImage: '/maps/neon/map.png',
+    categories: categories(NEON_SECTIONS),
+  },
+  {
+    id: 'skyhub', name: '天枢云阙', nameEn: 'Sky Hub',
+    splash: '#4A90D9',
+    splashImage: '/maps/skyhub/map.jpg',
+    categories: skyhubCategories(),
   },
   {
     id: 'bind', name: '源工重镇', nameEn: 'Bind',

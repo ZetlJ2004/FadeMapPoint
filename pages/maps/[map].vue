@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { MAPS, type MapCategory, type MapSection } from '~/data/maps'
-import { breezeSpots, type SpotItem, type SpotSection } from '~/data/spots/breeze'
+import { breezeSpots, type SpotItem, type SpotSection, type SpotCategory } from '~/data/spots/breeze'
+import { neonSpots } from '~/data/spots/neon'
+import { skyhubSpots } from '~/data/spots/skyhub'
 
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
@@ -13,8 +15,15 @@ if (!mapInfo) {
   throw createError({ statusCode: 404, statusMessage: '地图未找到', fatal: true })
 }
 
-// 是否使用点位数据（目前仅微风岛屿）
-const hasSpotData = mapId === 'breeze'
+// 各地图的点位数据
+const spotDataMap: Record<string, Record<string, SpotCategory>> = {
+  breeze: breezeSpots,
+  neon: neonSpots,
+  skyhub: skyhubSpots,
+}
+
+// 是否使用点位数据
+const hasSpotData = mapId in spotDataMap
 
 // 当前选中的分类和点位
 const activeCategory = ref(mapInfo.categories[0].key)
@@ -47,7 +56,7 @@ const { data: page } = hasSpotData
 // 获取当前分类的点位数据
 const currentSpotCategory = computed(() => {
   if (!hasSpotData) return null
-  return breezeSpots[activeCategory.value] ?? null
+  return spotDataMap[mapId]?.[activeCategory.value] ?? null
 })
 
 const currentSpotSection = computed(() => {
