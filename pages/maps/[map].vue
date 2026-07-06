@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MAPS, type MapCategory, type MapSection } from '~/data/maps'
+import { breezeSpots, type SpotItem, type SpotSection } from '~/data/spots/breeze'
 
 const route = useRoute()
 const mapId = route.params.map as string
@@ -9,9 +10,14 @@ if (!mapInfo) {
   throw createError({ statusCode: 404, statusMessage: '地图未找到', fatal: true })
 }
 
+// 是否使用点位数据（目前仅微风岛屿）
+const hasSpotData = mapId === 'breeze'
+
 // 当前选中的分类和点位
 const activeCategory = ref(mapInfo.categories[0].key)
 const activeSection = ref(mapInfo.categories[0].sections[0].key)
+// 三级导航：当前展开的点位
+const expandedSpots = ref<Set<string>>(new Set())
 
 const currentCategory = computed(() =>
   mapInfo.categories.find(c => c.key === activeCategory.value)!
@@ -21,20 +27,55 @@ const currentSection = computed(() =>
   currentCategory.value.sections.find(s => s.key === activeSection.value)!
 )
 
-// 加载当前点位内容
+// 加载当前点位内容（仅非 spot data 模式）
 const contentPath = computed(() =>
   `/maps/${mapId}/${activeCategory.value}/${activeSection.value}`
 )
 
-const { data: page } = await useAsyncData(
-  `map-${mapId}-${activeCategory.value}-${activeSection.value}`,
-  () => queryContent().where({ _path: contentPath.value }).findOne(),
-  { watch: [activeCategory, activeSection] }
-)
+// 非 spot data 模式才加载 content
+const { data: page } = hasSpotData
+  ? { data: ref(null) }
+  : await useAsyncData(
+      `map-${mapId}-${activeCategory.value}-${activeSection.value}`,
+      () => queryContent().where({ _path: contentPath.value }).findOne(),
+      { watch: [activeCategory, activeSection] }
+    )
+
+// 获取当前分类的点位数据
+const currentSpotCategory = computed(() => {
+  if (!hasSpotData) return null
+  return breezeSpots[activeCategory.value] ?? null
+})
+
+const currentSpotSection = computed(() => {
+  if (!currentSpotCategory.value) return null
+  return currentSpotCategory.value.sections.find(s => s.key === activeSection.value) ?? null
+})
 
 function selectCategory(cat: MapCategory) {
   activeCategory.value = cat.key
   activeSection.value = cat.sections[0].key
+  expandedSpots.value = new Set()
+}
+
+function selectSection(sec: MapSection) {
+  activeSection.value = sec.key
+  expandedSpots.value = new Set()
+}
+
+function toggleSpot(spotId: string) {
+  const next = new Set(expandedSpots.value)
+  if (next.has(spotId)) {
+    next.delete(spotId)
+  } else {
+    next.add(spotId)
+  }
+  expandedSpots.value = next
+}
+
+function spotNumber(index: number): string {
+  const nums = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
+  return nums[index] ?? `${index + 1}`
 }
 
 useSeoMeta({
@@ -73,7 +114,7 @@ useSeoMeta({
               :key="sec.key"
               class="sidebar-sub"
               :class="{ active: activeSection === sec.key }"
-              @click="activeSection = sec.key"
+              @click="selectSection(sec)"
             >
               {{ sec.label }}
             </button>
@@ -85,13 +126,50 @@ useSeoMeta({
       <main class="map-content">
         <div class="content-bar">
           <span class="content-label">{{ currentCategory.label }} · {{ currentSection.label }}</span>
+          <span v-if="currentSpotSection?.header" class="content-subheader">{{ currentSpotSection.header }}</span>
         </div>
-        <div v-if="page" class="content-body">
-          <ContentRenderer :value="page" />
+
+        <!-- 点位列表（仅微风岛屿） -->
+        <div v-if="hasSpotData && currentSpotSection" class="spots-list">
+          <div
+            v-for="(spot, idx) in currentSpotSection.spots"
+            :key="spot.id"
+            class="spot-item"
+          >
+            <button
+              class="spot-label-btn"
+              :class="{ expanded: expandedSpots.has(spot.id) }"
+              @click="toggleSpot(spot.id)"
+            >
+              <span class="spot-arrow">{{ expandedSpots.has(spot.id) ? '▾' : '▸' }}</span>
+              <span class="spot-text">{{ spotNumber(idx) }} {{ spot.label }}</span>
+            </button>
+            <div v-if="expandedSpots.has(spot.id)" class="spot-images">
+              <template v-if="spot.images.length > 0">
+                <div v-for="(img, i) in spot.images" :key="i" class="spot-image-wrap">
+                  <img :src="img" :alt="`${spot.label} 点位图 ${i + 1}`" class="spot-image" loading="lazy" />
+                  <span v-if="spot.images.length > 1" class="image-index">{{ i + 1 }}</span>
+                </div>
+              </template>
+              <div v-else class="spot-no-image">
+                <p>暂无图片，待补充</p>
+              </div>
+            </div>
+          </div>
+          <div v-if="currentSpotSection.spots.length === 0" class="spots-empty">
+            <p>该点位暂无内容</p>
+          </div>
         </div>
-        <div v-else class="content-empty">
-          <p>点位图待补充</p>
-          <p class="hint">在 <code>content{{ contentPath }}.md</code> 中添加内容</p>
+
+        <!-- 通用内容区（其他地图） -->
+        <div v-else-if="!hasSpotData">
+          <div v-if="page" class="content-body">
+            <ContentRenderer :value="page" />
+          </div>
+          <div v-else class="content-empty">
+            <p>点位图待补充</p>
+            <p class="hint">在 <code>content{{ contentPath }}.md</code> 中添加内容</p>
+          </div>
         </div>
       </main>
     </div>
@@ -210,12 +288,23 @@ useSeoMeta({
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
 }
 
 .content-label {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-primary);
+}
+
+.content-subheader {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  background: var(--color-card-bg);
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
 }
 
 .content-empty {
@@ -236,5 +325,104 @@ useSeoMeta({
 .hint {
   font-size: 0.85rem;
   margin-top: 0.5rem;
+}
+
+/* --- 点位列表 --- */
+.spots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.spot-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.spot-label-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.spot-label-btn:hover {
+  background: var(--color-card-bg);
+}
+
+.spot-label-btn.expanded {
+  background: var(--color-card-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.spot-arrow {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  width: 1em;
+}
+
+.spot-text {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* --- 点位图片 --- */
+.spot-images {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.spot-image-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  max-width: 100%;
+}
+
+.spot-image {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  display: block;
+}
+
+.image-index {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+}
+
+.spot-no-image {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.spots-empty {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--color-muted);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
 }
 </style>

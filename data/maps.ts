@@ -18,6 +18,7 @@ export interface MapInfo {
   name: string        // 中文名
   nameEn: string      // 英文名
   splash: string      // 封面图色
+  splashImage?: string // 封面图片（优先于色块）
   categories: MapCategory[]
 }
 
@@ -52,7 +53,38 @@ function categories(sections: MapSection[]): MapCategory[] {
   ]
 }
 
+// 微风岛屿专用：回防包含 A/B/中
+const BREEZE_ATTACK_SECTIONS: MapSection[] = [
+  { key: 'a', label: 'A 点' },
+  { key: 'b', label: 'B 点' },
+]
+
+const BREEZE_DEFENSE_SECTIONS: MapSection[] = [
+  { key: 'a', label: 'A 点' },
+  { key: 'b', label: 'B 点' },
+]
+
+const BREEZE_RETAKE_SECTIONS: MapSection[] = [
+  { key: 'a', label: 'A 点' },
+  { key: 'b', label: 'B 点' },
+  { key: 'mid', label: '中路' },
+]
+
+function breezeCategories(): MapCategory[] {
+  return [
+    { key: 'attack',  label: '进攻方', icon: '⚔️', sections: BREEZE_ATTACK_SECTIONS },
+    { key: 'defense', label: '防守方', icon: '🛡️', sections: BREEZE_DEFENSE_SECTIONS },
+    { key: 'retake',  label: '回防',   icon: '🔄', sections: BREEZE_RETAKE_SECTIONS },
+  ]
+}
+
 export const MAPS: MapInfo[] = [
+  {
+    id: 'breeze', name: '微风岛屿', nameEn: 'Breeze',
+    splash: '#5B8C5A',
+    splashImage: '/maps/breeze/map.png',
+    categories: breezeCategories(),
+  },
   {
     id: 'bind', name: '源工重镇', nameEn: 'Bind',
     splash: '#8B4513',

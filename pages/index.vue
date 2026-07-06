@@ -23,7 +23,12 @@ useSeoMeta({
           class="map-card"
           :style="{ '--splash': map.splash }"
         >
-          <div class="map-banner"></div>
+          <div
+            class="map-banner"
+            :class="{ 'has-image': map.splashImage }"
+          >
+            <img v-if="map.splashImage" :src="map.splashImage" :alt="map.name" class="map-banner-img" />
+          </div>
           <div class="map-info">
             <h3 class="map-name">{{ map.name }}</h3>
             <span class="map-name-en">{{ map.nameEn }}</span>
@@ -82,6 +87,20 @@ useSeoMeta({
   height: 100px;
   background: var(--splash);
   opacity: 0.85;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-banner.has-image {
+  background: transparent;
+  opacity: 1;
+}
+
+.map-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .map-info {
