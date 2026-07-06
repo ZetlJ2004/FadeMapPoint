@@ -3,6 +3,9 @@ import { MAPS, type MapCategory, type MapSection } from '~/data/maps'
 import { breezeSpots, type SpotItem, type SpotSection } from '~/data/spots/breeze'
 
 const route = useRoute()
+const runtimeConfig = useRuntimeConfig()
+const baseURL = (runtimeConfig.app.baseURL ?? '/').replace(/\/$/, '')
+
 const mapId = route.params.map as string
 const mapInfo = MAPS.find(m => m.id === mapId)
 
@@ -147,7 +150,7 @@ useSeoMeta({
             <div v-if="expandedSpots.has(spot.id)" class="spot-images">
               <template v-if="spot.images.length > 0">
                 <div v-for="(img, i) in spot.images" :key="i" class="spot-image-wrap">
-                  <img :src="img" :alt="`${spot.label} 点位图 ${i + 1}`" class="spot-image" loading="lazy" />
+                  <img :src="baseURL + img" :alt="`${spot.label} 点位图 ${i + 1}`" class="spot-image" loading="lazy" />
                   <span v-if="spot.images.length > 1" class="image-index">{{ i + 1 }}</span>
                 </div>
               </template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { MAPS } from '~/data/maps'
 
+const runtimeConfig = useRuntimeConfig()
+const baseURL = (runtimeConfig.app.baseURL ?? '/').replace(/\/$/, '')
+
 useSeoMeta({
   title: '黑梦点位 — 无畏契约地图点位图',
   description: '无畏契约各地图进攻、防守、回防点位图。',
@@ -27,7 +30,7 @@ useSeoMeta({
             class="map-banner"
             :class="{ 'has-image': map.splashImage }"
           >
-            <img v-if="map.splashImage" :src="map.splashImage" :alt="map.name" class="map-banner-img" />
+            <img v-if="map.splashImage" :src="baseURL + map.splashImage" :alt="map.name" class="map-banner-img" />
           </div>
           <div class="map-info">
             <h3 class="map-name">{{ map.name }}</h3>
