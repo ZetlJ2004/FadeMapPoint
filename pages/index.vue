@@ -124,4 +124,67 @@ useSeoMeta({
   font-size: 0.8rem;
   color: var(--color-muted);
 }
+
+/* ============ 移动端适配 ============ */
+@media (max-width: 768px) {
+  .home {
+    padding-top: 1rem;
+  }
+
+  .hero {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .hero-desc {
+    font-size: 0.9rem;
+  }
+
+  .maps-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .map-banner {
+    height: 72px;
+  }
+
+  .map-info {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .map-name {
+    font-size: 0.9rem;
+  }
+
+  .map-name-en {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .maps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.3rem;
+  }
+
+  .map-banner {
+    height: 60px;
+  }
+
+  .map-info {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .map-name {
+    font-size: 0.8rem;
+  }
+}
 </style>

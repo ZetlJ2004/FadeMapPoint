@@ -428,4 +428,149 @@ useSeoMeta({
   border: 2px dashed var(--color-border);
   border-radius: var(--radius);
 }
+
+/* ============ 移动端适配 ============ */
+@media (max-width: 768px) {
+  .map-page {
+    padding-top: 0.75rem;
+  }
+
+  .map-header {
+    margin-bottom: 1rem;
+  }
+
+  .map-title {
+    font-size: 1.4rem;
+  }
+
+  .map-title-en {
+    font-size: 0.9rem;
+  }
+
+  /* 主体：垂直堆叠 */
+  .map-body {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* 侧边栏：水平折叠式 */
+  .sidebar {
+    width: 100%;
+    flex-shrink: 1;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .sidebar-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .sidebar-cat {
+    width: auto;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .cat-icon {
+    font-size: 0.85rem;
+  }
+
+  .sidebar-subs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+    gap: 0.2rem;
+  }
+
+  .sidebar-sub {
+    width: auto;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  /* 内容区 */
+  .map-content {
+    width: 100%;
+  }
+
+  .content-bar {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .content-label {
+    font-size: 0.85rem;
+  }
+
+  .content-subheader {
+    font-size: 0.75rem;
+  }
+
+  /* 点位列表 */
+  .spots-list {
+    gap: 0.35rem;
+  }
+
+  .spot-label-btn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* 图片：单列全宽 */
+  .spot-images {
+    padding: 0.5rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .spot-image-wrap {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .image-index {
+    font-size: 0.7rem;
+    top: 0.35rem;
+    right: 0.35rem;
+  }
+
+  .content-empty,
+  .spots-empty {
+    padding: 2rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* 小屏手机 (< 400px) */
+@media (max-width: 400px) {
+  .sidebar-cat {
+    padding: 0.3rem 0.45rem;
+    font-size: 0.72rem;
+  }
+
+  .sidebar-sub {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .spot-label-btn {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .spot-images {
+    padding: 0.35rem;
+    gap: 0.35rem;
+  }
+}
 </style>
