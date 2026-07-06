@@ -31,6 +31,15 @@ const activeSection = ref(mapInfo.categories[0].sections[0].key)
 // 三级导航：当前展开的点位
 const expandedSpots = ref<Set<string>>(new Set())
 
+// 图片弹窗
+const modalSrc = ref('')
+const modalVisible = ref(false)
+
+function openModal(src: string) {
+  modalSrc.value = src
+  modalVisible.value = true
+}
+
 const currentCategory = computed(() =>
   mapInfo.categories.find(c => c.key === activeCategory.value)!
 )
@@ -159,7 +168,13 @@ useSeoMeta({
             <div v-if="expandedSpots.has(spot.id)" class="spot-images">
               <template v-if="spot.images.length > 0">
                 <div v-for="(img, i) in spot.images" :key="i" class="spot-image-wrap">
-                  <img :src="baseURL + img" :alt="`${spot.label} 点位图 ${i + 1}`" class="spot-image" loading="lazy" />
+                  <img
+                    :src="baseURL + img"
+                    :alt="`${spot.label} 点位图 ${i + 1}`"
+                    class="spot-image"
+                    loading="lazy"
+                    @click="openModal(baseURL + img)"
+                  />
                   <span v-if="spot.images.length > 1" class="image-index">{{ i + 1 }}</span>
                 </div>
               </template>
@@ -185,6 +200,8 @@ useSeoMeta({
         </div>
       </main>
     </div>
+
+    <ImageModal v-model="modalVisible" :src="modalSrc" />
   </div>
 </template>
 
@@ -410,6 +427,12 @@ useSeoMeta({
   border-radius: 6px;
   border: 1px solid var(--color-border);
   display: block;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.spot-image:hover {
+  opacity: 0.9;
 }
 
 .image-index {

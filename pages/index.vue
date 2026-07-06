@@ -4,6 +4,15 @@ import { MAPS } from '~/data/maps'
 const runtimeConfig = useRuntimeConfig()
 const baseURL = (runtimeConfig.app.baseURL ?? '/').replace(/\/$/, '')
 
+// 图片弹窗
+const modalSrc = ref('')
+const modalVisible = ref(false)
+
+function openModal(src: string) {
+  modalSrc.value = src
+  modalVisible.value = true
+}
+
 useSeoMeta({
   title: '黑梦点位 — 无畏契约地图点位图',
   description: '无畏契约各地图进攻、防守、回防点位图。',
@@ -30,7 +39,13 @@ useSeoMeta({
             class="map-banner"
             :class="{ 'has-image': map.splashImage }"
           >
-            <img v-if="map.splashImage" :src="baseURL + map.splashImage" :alt="map.name" class="map-banner-img" />
+            <img
+              v-if="map.splashImage"
+              :src="baseURL + map.splashImage"
+              :alt="map.name"
+              class="map-banner-img"
+              @click.prevent="openModal(baseURL + map.splashImage)"
+            />
           </div>
           <div class="map-info">
             <h3 class="map-name">{{ map.name }}</h3>
@@ -39,6 +54,8 @@ useSeoMeta({
         </NuxtLink>
       </div>
     </section>
+
+    <ImageModal v-model="modalVisible" :src="modalSrc" />
   </div>
 </template>
 
@@ -104,6 +121,12 @@ useSeoMeta({
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.map-banner-img:hover {
+  opacity: 0.85;
 }
 
 .map-info {
